@@ -1,0 +1,63 @@
+deployments:
+  - name: {{ cookiecutter.project_slug }}
+    replicaCount: 2
+    livenessProbe:
+      httpGet:
+        path: /health/
+        port: 80
+      failureThreshold: 10
+      initialDelaySeconds: 30
+      timeoutSeconds: 3
+    readinessProbe:
+      httpGet:
+        path: /health/
+        port: 80
+      initialDelaySeconds: 30
+      timeoutSeconds: 3
+    resources:
+      limits:
+        cpu: 200m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    service:
+      type: ClusterIP
+      port: 80
+      ingress:
+        enabled: true
+        annotations: {
+          kubernetes.io/ingress.class: nginx,
+          kubernetes.io/tls-acme: "true"
+        }
+        hosts:
+          - host: backend.md-prod-it.com
+            paths:
+              - /api/v1/forecasting/
+              - /api/v1/forecasting/
+          - host: backend.masterdelivery.eu
+            paths:
+              - /api/v1/{{ cookiecutter.project_slug }}/
+              - /api/v1/{{ cookiecutter.project_slug }}/
+          - host: api.masterdelivery.eu
+            paths:
+              - /api/v1/{{ cookiecutter.project_slug }}/
+              - /api/v1/{{ cookiecutter.project_slug }}/
+        tls:
+          - secretName: mastermind-backend-tls
+            hosts:
+              - backend.md-prod-it.com
+          - secretName: mastermind-backend-masterdelivery-tls
+            hosts:
+              - backend.masterdelivery.eu
+          - secretName: mastermind-api-masterdelivery-tls
+            hosts:
+              - api.masterdelivery.eu
+
+nodeSelector: {
+  eks.amazonaws.com/nodegroup: md-prod-app-driven-gnu
+}
+
+tolerations: [ ]
+
+affinity: { }

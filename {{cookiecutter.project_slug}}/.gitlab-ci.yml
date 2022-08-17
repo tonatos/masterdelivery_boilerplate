@@ -1,0 +1,20 @@
+include:
+  - project: 'devops/includes'
+    file: '/common_back_v2.yml'
+
+stages:
+  - build
+  - test
+  - deploy
+  - qa_api_tests
+
+variables:
+  HELM_APP_NAME: "{{ cookiecutter.project_slug }}"
+
+test:
+  extends: .test
+  services:
+    - name: registry.md-prod-yc.ru/devops/postgres-for-tests:1.0.0
+      alias: postgres
+    - name: redis:alpine
+      alias: redis

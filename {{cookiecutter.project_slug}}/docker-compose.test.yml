@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  tests:
+    build:
+      context: .
+      target: dev
+    env_file:
+      - .env
+    environment:
+      ENV: testing
+      TESTING_PG_HOST: db
+      TESTING_REDIS_HOST: redis://redis:6379
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    hostname: db
+    environment:
+      TZ: UTC
+      POSTGRES_DB: $TESTING_PG_DB_NAME
+      POSTGRES_USER: $TESTING_PG_USER
+      POSTGRES_PASSWORD: $TESTING_PG_PASS
+    ports:
+      - 5432:5432
+
+  redis:
+    ports:
+      - 6379:6379
+
+  kafka:
+    ports:
+      - 9092:9092

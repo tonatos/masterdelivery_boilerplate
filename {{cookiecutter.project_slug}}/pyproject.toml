@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "masterdelivery_boilerplate"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.78.0"
+sqlalchemy = "^1.4.39"
+pydantic = {extras = ["dotenv"], version = "^1.9.1"}
+redis = "^4.3.4"
+uvicorn = "^0.18.2"
+sentry-sdk = "^1.6.0"
+mm-healthchecker = ">=0.1.2"
+mm-logging = ">=0.0.1"
+mm-i18n = ">=0.1.8"
+mm-tracing = ">=0.2.9"
+mm-authentication = ">=0.1.6"
+mm-settings = ">=0.0.dev20"
+mm-kafka = ">=0.1.5"
+databases = "^0.6.0"
+asyncpg = "^0.26.0"
+greenlet = "^1.1.2"
+alembic = "^1.8.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+skip-string-normalization = "True"
+
+[tool.isort]
+profile = "black"
+order_by_type = "False"
+src_paths = "app"
+lines_after_imports = 2
+
+[[tool.poetry.source]]
+name = "mm_library"
+url = "https://nexus-rm.md-infra.ru/repository/md-pypi/simple/"

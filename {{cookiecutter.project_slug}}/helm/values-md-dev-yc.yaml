@@ -1,0 +1,43 @@
+deployments:
+  - name: {{ cookiecutter.project_slug }}
+    replicaCount: 1
+    livenessProbe:
+      httpGet:
+        path: /health/
+        port: 80
+      failureThreshold: 10
+      initialDelaySeconds: 30
+      timeoutSeconds: 3
+    readinessProbe:
+      httpGet:
+        path: /health/
+        port: 80
+      initialDelaySeconds: 30
+      timeoutSeconds: 3
+    service:
+      type: ClusterIP
+      port: 80
+      ingress:
+        enabled: true
+        annotations: {
+          kubernetes.io/ingress.class: nginx,
+          kubernetes.io/tls-acme: "true"
+        }
+        hosts:
+          - host: backend.md-dev.ru
+            paths:
+              - /api/v1/{{ cookiecutter.project_slug }}/
+              - /api/v1/{{ cookiecutter.project_slug }}/
+
+        tls:
+          - secretName: mastermind-backend-tls
+            hosts:
+              - backend.md-dev.ru
+
+nodeSelector: {
+  node-group: dev-group
+}
+
+tolerations: [ ]
+
+affinity: { }

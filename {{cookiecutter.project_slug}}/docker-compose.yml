@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    hostname: db
+    env_file:
+      - .env
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data:cached
+
+  redis:
+    image: redis:alpine
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    env_file:
+      - .env
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: .
+      target: app
+    ports:
+      - 8000:80
+    env_file:
+      - .env
+    environment:
+      - PG_HOST=db
+      - REDIS_HOST=redis://redis:6379
+    restart: on-failure:5
+    depends_on:
+      - db
+      - redis
+      - kafka
+    volumes:
+      - ./app:/src/app
+
+volumes:
+  postgres_data:
